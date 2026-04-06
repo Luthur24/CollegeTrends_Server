@@ -681,7 +681,9 @@ def toggle_like(post_id):
                 """, (post_owner['user_id'], g.current_user_id, post_id, 
                       post_owner['user_id'], g.current_user_id, post_id))
         except psycopg2.IntegrityError:
-            db.rollback()
+           db.rollback()
+           return jsonify({'success': True, 'message': 'Already liked'})
+
     else:
         cur.execute("DELETE FROM collegetrends_post_likes WHERE post_id = %s AND user_id = %s", 
                     (post_id, g.current_user_id))
@@ -858,6 +860,8 @@ def toggle_follow(user_id):
             """, (user_id, g.current_user_id))
         except psycopg2.IntegrityError:
             db.rollback()
+            return jsonify({'error': 'Username or email already exists'}), 409
+
     else:
         cur.execute("DELETE FROM collegetrends_follows WHERE follower_id = %s AND following_id = %s", 
                     (g.current_user_id, user_id))
@@ -1251,8 +1255,10 @@ def start_conversation():
 def index():
     return jsonify({'status': 'CollegeTrends API Running', 'version': '1.0.0'})
 
+# Auto-create tables on startup (works with Gunicorn too)
+with app.app_context():
+    init_db()
+    print("Database initialized")
+
 if __name__ == '__main__':
-    with app.app_context():
-        init_db()
-        print("Database initialized")
     app.run(debug=True, host='0.0.0.0', port=5000)
