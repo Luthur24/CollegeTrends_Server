@@ -571,7 +571,7 @@ def get_feed():
     user_course  = user_info['course'] if user_info else ''
     user_univ    = user_info['university'] if user_info else ''
 
-    # Single query: feed posts + latest comment via LATERAL, downvotes_count included
+    # Fixed query with proper followers_count subquery
     cur.execute("""
         WITH scored AS (
             SELECT
@@ -605,7 +605,6 @@ def get_feed():
                 ON f.following_id = p.user_id AND f.follower_id = %s
             WHERE p.created_at > NOW() - INTERVAL '30 days'
         )
-        
         SELECT
             s.*,
             (s.popularity_score + s.similarity_score) * (0.9 + s.rand_factor * 0.2) AS final_score,
@@ -652,7 +651,7 @@ def get_feed():
             'university': p['user_university'],
             'course': p['user_course'],
             'verified': p['is_verified'],
-            'followers_count':p['followers_count'],
+            'followers_count': p['followers_count'] or 0,
             'latest_comment': {
                 'username': p['lc_username'],
                 'text': p['lc_text']
@@ -660,6 +659,7 @@ def get_feed():
         })
 
     return jsonify(result)
+
 
 
 # ── POSTS ──────────────────────────────────────────────────────────
