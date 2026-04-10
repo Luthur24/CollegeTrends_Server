@@ -451,10 +451,10 @@ def get_user_profile(user_id):
     })
 
 
-#Express.js - add this simple endpoint
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
-});
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'ok'}), 200
+
 
 @app.route('/api/users/me', methods=['PATCH'])
 @token_required
