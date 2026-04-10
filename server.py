@@ -451,6 +451,11 @@ def get_user_profile(user_id):
     })
 
 
+#Express.js - add this simple endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 @app.route('/api/users/me', methods=['PATCH'])
 @token_required
 def update_profile():
@@ -575,6 +580,7 @@ def get_feed():
                 u.id   AS user_id,
                 u.username, u.avatar_url, u.university AS user_university,
                 u.course AS user_course, u.is_verified,
+                (SELECT COUNT(*) FROM collegetrendsxx_follows WHERE following_id = u.id) as followers_count,
                 CASE WHEN pl.id IS NOT NULL THEN TRUE ELSE FALSE END AS user_liked,
                 CASE WHEN bk.id IS NOT NULL THEN TRUE ELSE FALSE END AS user_bookmarked,
                 v.vote_type AS user_vote,
@@ -599,6 +605,7 @@ def get_feed():
                 ON f.following_id = p.user_id AND f.follower_id = %s
             WHERE p.created_at > NOW() - INTERVAL '30 days'
         )
+        
         SELECT
             s.*,
             (s.popularity_score + s.similarity_score) * (0.9 + s.rand_factor * 0.2) AS final_score,
@@ -645,6 +652,7 @@ def get_feed():
             'university': p['user_university'],
             'course': p['user_course'],
             'verified': p['is_verified'],
+            'followers_count':p['followers_count'],
             'latest_comment': {
                 'username': p['lc_username'],
                 'text': p['lc_text']
