@@ -17,11 +17,11 @@ app = Flask(__name__)
 CORS(app)
 
 # ── CONFIGURATION ─────────────────────────────────────────────────
-DB_HOST     = "dpg-d70himndiees73dlbeig-a.frankfurt-postgres.render.com"
-DB_NAME     = "trends_db2"
-DB_USER     = "trends_db2_user"
-DB_PASSWORD = "h5NO8WY8nxLF64WSM7jwYZ7b8B7dCOiR"
-DB_PORT     = 5432
+DB_HOST     = "pg-235735e2-ub7499710-7253.j.aivencloud.com"
+DB_NAME     = "defaultdb"
+DB_USER     = "avnadmin"
+DB_PASSWORD = "AVNS_q_zR9FvhvJHJGbiL0zp"
+DB_PORT     = 11602
 
 CLOUDINARY_CLOUD_NAME  = "ddusfl7pi"
 CLOUDINARY_API_KEY     = "599965682593626"
