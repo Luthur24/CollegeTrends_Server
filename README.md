@@ -173,18 +173,7 @@ Security
 
 Authentication uses JWT tokens, while passwords are hashed using bcrypt before storage.
 
-Production deployments should store:
 
-- Database credentials
-- Cloudinary credentials
-- JWT signing secrets
-- Other sensitive configuration
-
-as environment variables rather than committing them to source control.
-
-Never commit production credentials to GitHub.
-
-Running Locally
 
 Clone the repository:
 
